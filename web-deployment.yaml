@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  labels:
+    app: web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:                    # template 하나만!
+    metadata:
+      labels:
+        app: web
+    spec:                      # 바로 spec
+      containers:
+      - name: web
+        image: 723165663216.dkr.ecr.ap-northeast-2.amazonaws.com/petclinic/web:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:          # 여기로 이동!
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+      volumes:                 # volumes도 여기!
+      - name: nginx-config
+        configMap:
+          name: nginx-config
